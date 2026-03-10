@@ -115,9 +115,15 @@ app.post("/habits", async (req, res) => {
 
 app.put("/habits/:id", async (req, res) => {
   const { id } = req.params;
-  const { habit } = req.body;
-  const { error } = await supabase.from("habits").update({ habit }).eq("id", id);
+  const { habit, streak, last_completed } = req.body;
+
+  const { error } = await supabase
+    .from("habits")
+    .update({ habit, streak, last_completed })
+    .eq("id", id);
+
   if (error) return res.status(400).send(error.message);
+
   res.send("Habit updated");
 });
 
@@ -166,6 +172,7 @@ app.get("/analytics", async (req, res) => {
   data.journal = journal.count;
   data.habits = habits.count;
   data.learning = learning.count;
+
   res.send(data);
 });
 
